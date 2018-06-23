@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "rpio": "^0.9.21",
-    "serialport": "^6.2.0"
+    "serialport": "^6.2.0",
+    "hoek": "~> 4.2.1",
+    "request": "^2.34"
   },
   "devDependencies": {
     "jest": "^23.0.0"
