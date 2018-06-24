@@ -1,0 +1,7 @@
+{
+  "neutralDebounce": 5,
+  "min": 25,
+  "max": 255,
+  "neutral": 132,
+  "value": 131
+}
