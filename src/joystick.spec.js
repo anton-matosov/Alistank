@@ -66,7 +66,6 @@ describe("WHEN buttons constructed with zeros", () => {
     expect(sut.Power).toBe(false)
   });
 
-
   it('SHOULD have all sticks set to neutral values', () => {
     expect(sut.leftX).toBeCloseTo(0)
     expect(sut.leftY).toBeCloseTo(0)

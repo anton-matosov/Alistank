@@ -2,9 +2,11 @@
 
 const uart = require('./pi-pins').uart;
 const SerialPort = require('serialport');
+const fs = require('fs');
 
 class Stick {
   constructor() {
+    this.neutralDebounce = 5
     this.min = 0
     this.max = 255
     this.neutral = (this.max - this.min) / 2 
@@ -12,14 +14,63 @@ class Stick {
   }
 
   get stickValue() {
+    if (this.neutral == 0) {
+      return 0
+    }
     let value = Math.max(this.value, this.min)
     value = Math.min(value, this.max)
-    return (value - this.neutral) / this.neutral
+
+    const position = value - this.neutral
+    if (Math.abs(position) < this.neutralDebounce) {
+      return 0
+    }
+
+    if (position < 0) {
+      return position / (this.neutral - this.min)
+    } else {
+      return position / (this.max - this.neutral)
+    }
+  }
+
+  captureNeutral() {
+    this.neutral = this.value
+  }
+
+  prepareToCaptureMinMax() {
+    this.min = this.value
+    this.max = this.value
+  }
+
+  captureMinMax() {
+    this.min = Math.min(this.value, this.min)
+    this.max = Math.max(this.value, this.max)
+  }
+
+  save(path) {
+    fs.writeFileSync(path, JSON.stringify(this, null, 2));
+  }
+
+  load(path) {
+    if (fs.existsSync(path)) {
+      const content=fs.readFileSync(path, "utf8");
+      const obj = JSON.parse(content);
+
+      Object.assign(this, obj);
+    }
   }
 }
 
 class Buttons {
   constructor(buttons1, buttons2) {
+    // Buttons 2:
+    // bit 0 - L1
+    // bit 1 - L2
+    // bit 2 - L3
+    // bit 3 ------- unused. always 1
+    this.L1 = this.isBitSet(buttons2, 0)
+    this.L2 = this.isBitSet(buttons2, 1)
+    this.L3 = this.isBitSet(buttons2, 2)
+
     // Buttons 1:
     // bit 0 - R1
     // bit 1 - R2
@@ -33,18 +84,9 @@ class Buttons {
     this.R2 = this.isBitSet(buttons1, 1)
     this.R3 = this.isBitSet(buttons1, 2)
 
-    this.Release = this.isBitSet(buttons1, 4)
     this.Bluetooth = this.isBitSet(buttons1, 5)
     this.Power = this.isBitSet(buttons1, 6)
-
-    // Buttons 2:
-    // bit 0 - L1
-    // bit 1 - L2
-    // bit 2 - L3
-    // bit 3 ------- unused. always 1
-    this.L1 = this.isBitSet(buttons2, 0)
-    this.L2 = this.isBitSet(buttons2, 1)
-    this.L3 = this.isBitSet(buttons2, 2)
+    this.Release = this.isBitSet(buttons1, 4)
 
     this.leftX = 0
     this.leftY = 0
@@ -64,9 +106,13 @@ class Joystick {
 
     this.leftX = new Stick()
     this.leftY = new Stick()
-
     this.rightX = new Stick()
     this.rightY = new Stick()
+
+    this.leftX.load(`${this.calibrationDataPath}/leftX.json`)
+    this.leftY.load(`${this.calibrationDataPath}/leftY.json`)
+    this.rightX.load(`${this.calibrationDataPath}/rightX.json`)
+    this.rightY.load(`${this.calibrationDataPath}/rightY.json`)
   }
 
   start() {
@@ -89,7 +135,7 @@ class Joystick {
         return
       }
 
-      let ack = new Buffer(1)
+      let ack = new Buffer.alloc(1)
       ack.writeInt8(tick)
       port.write(ack)
 
@@ -135,7 +181,7 @@ class Joystick {
   calibrate() {
     const oldCallback = this.changedCallback
 
-    console.log("Starting calibration")
+    console.log("Starting calibration. Turn on joystick and press any button...")
     let stage = 1
     this.changedCallback = function (buttons) {
       
@@ -146,29 +192,69 @@ class Joystick {
           break;
         case 2:
           if (buttons.L3 && buttons.R3) {
-            
+            this.leftX.captureNeutral()
+            this.leftY.captureNeutral()
+            this.rightX.captureNeutral()
+            this.rightY.captureNeutral()
 
             console.log("Neutral positions captured.")
+            console.log("this.leftX.neutral", this.leftX.neutral)
+            console.log("this.leftY.neutral", this.leftY.neutral)
+            console.log("this.rightX.neutral", this.rightX.neutral)
+            console.log("this.rightY.neutral", this.rightY.neutral)
             console.log("Release all buttons")
             stage += 1
           }
           break;
         case 3:
           console.log("Move joystick sticks to all extrem positions. Once done press L3+R3")
+          this.leftX.prepareToCaptureMinMax()
+          this.leftY.prepareToCaptureMinMax()
+          this.rightX.prepareToCaptureMinMax()
+          this.rightY.prepareToCaptureMinMax()
+
           stage += 1
           break;
         case 4:
+          this.leftX.captureMinMax()
+          this.leftY.captureMinMax()
+          this.rightX.captureMinMax()
+          this.rightY.captureMinMax()
+          
           if (buttons.L3 && buttons.R3) {
             console.log("Extreme positions captured.")
+            console.log("this.leftX.min/max", this.leftX.min, "/", this.leftX.max)
+            console.log("this.leftY.min/max", this.leftY.min, "/", this.leftY.max)
+            console.log("this.rightX.min/max", this.rightX.min, "/", this.rightX.max)
+            console.log("this.rightY.min/max", this.rightY.min, "/", this.rightY.max)
             console.log("Calibration complete. Release all buttons")
             stage += 1
+
+            this.leftX.save(`${this.calibrationDataPath}/leftX.json`)
+            this.leftY.save(`${this.calibrationDataPath}/leftY.json`)
+            this.rightX.save(`${this.calibrationDataPath}/rightX.json`)
+            this.rightY.save(`${this.calibrationDataPath}/rightY.json`)
+            // const.calibrationDataPath = 
+            // fs.writeFile(`${calibrationDataPath}/leftX.json`, JSON.stringify(this.leftX, null, 2));
+            // fs.writeFile(`${calibrationDataPath}/leftY.json`, JSON.stringify(this.leftY, null, 2));
+            // fs.writeFile(`${calibrationDataPath}/rightX.json`, JSON.stringify(this.rightX, null, 2));
+            // fs.writeFile(`${calibrationDataPath}/rightY.json`, JSON.stringify(this.rightY, null, 2));
 
             this.changedCallback = oldCallback
           }
           break;
       }
     }
+  }
 
+  get calibrationDataPath() {
+    // return process.env["$HOME"] + "/tmp/"
+    // return "/Users/antonmatosov/Develop/XYZRobot/Alistank/calibration"
+    
+    if (process.env.NODE_ENV === 'test') {
+      return process.cwd() + "/.test"
+    }
+    return process.cwd() + "/calibration"
   }
 }
 
