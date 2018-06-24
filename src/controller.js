@@ -22,6 +22,9 @@ class Controller {
 
   start() {
     this.joystick.start()
+  }
+
+  calibrate() {
     this.joystick.calibrate()
   }
 }

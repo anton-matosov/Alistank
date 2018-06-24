@@ -12,10 +12,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "rpio": "^0.9.21",
-    "serialport": "^6.2.0",
+    "commander": "^2.15.1",
     "hoek": "~> 4.2.1",
-    "request": "^2.34"
+    "request": "^2.34",
+    "rpio": "^0.9.21",
+    "serialport": "^6.2.0"
   },
   "devDependencies": {
     "jest": "^23.0.0"
