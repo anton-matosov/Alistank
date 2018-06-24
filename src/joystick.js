@@ -3,6 +3,21 @@
 const uart = require('./pi-pins').uart;
 const SerialPort = require('serialport');
 
+class Stick {
+  constructor() {
+    this.min = 0
+    this.max = 255
+    this.neutral = (this.max - this.min) / 2 
+    this.value = this.neutral
+  }
+
+  get stickValue() {
+    let value = Math.max(this.value, this.min)
+    value = Math.min(value, this.max)
+    return (value - this.neutral) / this.neutral
+  }
+}
+
 class Buttons {
   constructor(buttons1, buttons2) {
     // Buttons 1:
@@ -33,54 +48,49 @@ class Buttons {
     this.L3 = this.isBitSet(buttons2, 2)
     
 
-    this._leftX = 0
-    this._leftY = 0
+    this._leftX = new Stick()
+    this._leftY = new Stick()
 
-    this._rightX = 0
-    this._rightY = 0
+    this._rightX = new Stick()
+    this._rightY = new Stick()
   }
 
   set leftX(value) {
-    this._leftX = this.toStickRange(value)
+    this._leftX.value = value
   }
 
   get leftX() {
-    return this._leftX
+    return this._leftX.stickValue
   }
 
   set leftY(value) {
-    this._leftY = this.toStickRange(value)
+    this._leftY.value = value
   }
 
   get leftY() {
-    return this._leftY
+    return this._leftY.stickValue
   }
 
   set rightX(value) {
-    this._rightX = this.toStickRange(value)
+    this._rightX.value = value
   }
 
   get rightX() {
-    return this._rightX
+    return this._rightX.stickValue
   }
 
   set rightY(value) {
-    this._rightY = this.toStickRange(value)
+    this._rightY.value = value
   }
 
   get rightY() {
-    return this._rightY
+    return this._rightY.stickValue
   }
 
   isBitSet(value, bitNumber) {
     return (value & (1 << bitNumber)) != 0
   }
 
-  toStickRange(value) {
-    value = Math.max(value, 0)
-    value = Math.min(value, 255)
-    return (value - 127) / 128
-  }
 }
 
 class Joystick {

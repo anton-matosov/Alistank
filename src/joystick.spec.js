@@ -41,11 +41,11 @@ describe("WHEN joystick constructed", () => {
     expect(buttons.R2).toBe(false)
     expect(buttons.R3).toBe(false)
 
-    expect(buttons.leftX).toBe(0)
-    expect(buttons.leftY).toBe(0)
+    expect(buttons.leftX).toBeCloseTo(0)
+    expect(buttons.leftY).toBeCloseTo(0)
 
-    expect(buttons.rightX).toBe(0)
-    expect(buttons.rightY).toBe(0)
+    expect(buttons.rightX).toBeCloseTo(0)
+    expect(buttons.rightY).toBeCloseTo(0)
   })
 })
 
@@ -68,11 +68,11 @@ describe("WHEN buttons constructed with zeros", () => {
 
 
   it('SHOULD have all sticks set to neutral values', () => {
-    expect(sut.leftX).toBe(0)
-    expect(sut.leftY).toBe(0)
+    expect(sut.leftX).toBeCloseTo(0)
+    expect(sut.leftY).toBeCloseTo(0)
 
-    expect(sut.rightX).toBe(0)
-    expect(sut.rightY).toBe(0)
+    expect(sut.rightX).toBeCloseTo(0)
+    expect(sut.rightY).toBeCloseTo(0)
   });
 });
 
@@ -94,11 +94,11 @@ describe("WHEN buttons constructed with ones", () => {
   });
 
   it('SHOULD have all sticks set to neutral values', () => {
-    expect(sut.leftX).toBe(0)
-    expect(sut.leftY).toBe(0)
+    expect(sut.leftX).toBeCloseTo(0)
+    expect(sut.leftY).toBeCloseTo(0)
 
-    expect(sut.rightX).toBe(0)
-    expect(sut.rightY).toBe(0)
+    expect(sut.rightX).toBeCloseTo(0)
+    expect(sut.rightY).toBeCloseTo(0)
   });
 });
 
@@ -111,7 +111,7 @@ describe("WHEN buttons constructed with zeros", () => {
     sut.rightY = 0
 
     it('SHOULD have all sticks set value close to -1', () => {
-      const minimumValue = -0.99;
+      const minimumValue = -1;
       expect(sut.leftX).toBeCloseTo(minimumValue)
       expect(sut.leftY).toBeCloseTo(minimumValue)
 
