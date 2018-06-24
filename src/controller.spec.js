@@ -3,10 +3,10 @@
 
 const rpio = require('./rpio-mock');
 
-const controller = require('./controller')
+const Controller = require('./controller')
 
 describe("WHEN constructed", () => {
-  const sut = new controller.Controller();
+  const sut = new Controller();
 
   it('SHOULD create both tracks', () => {
     expect(sut.leftTrack).not.toBeNull()

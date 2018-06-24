@@ -1,5 +1,5 @@
 {
-  "name": "Alistank",
+  "name": "alistank",
   "version": "1.0.0",
   "description": "App to control Alisa's Tank",
   "main": "src/index.js",

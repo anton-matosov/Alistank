@@ -5,14 +5,25 @@ const joystick = require('./joystick')
 const pins = require('./pi-pins')
 
 class Controller {
-  constructor() {
+  constructor(uart = null) {
     this.leftTrack = new track.Track(pins.pwm.pin12);
     this.rightTrack = new track.Track(pins.pwm.pin32);
 
-    this.joystick = new joystick.Joystick(pins.uart.gpio);
+    this.joystick = new joystick.Joystick(uart || pins.uart.gpio);
+
+    this.joystick.onChanged(buttons => {
+      this.leftTrack.outputValue = buttons.leftY
+      this.rightTrack.outputValue = buttons.rightY
+
+      console.log(JSON.stringify(buttons))
+    })
+  }
+
+  start() {
+    this.joystick.start()
   }
 }
 
-module.exports = {
-  Controller
-}
+module.exports = Controller
+
+
