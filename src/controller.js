@@ -21,6 +21,7 @@ class Controller {
 
   start() {
     this.joystick.start()
+    this.joystick.calibrate()
   }
 }
 

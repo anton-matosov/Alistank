@@ -130,10 +130,6 @@ class Joystick {
     });
   }
 
-  onChanged(callback) {
-    this.changedCallback = callback
-  }
-
   parsePacket(data) {
     // console.log('Data:', data);
     const header = data.readUInt8(0)
@@ -160,6 +156,47 @@ class Joystick {
       buttons,
       tick
     }
+  }
+
+  onChanged(callback) {
+    this.changedCallback = callback
+  }
+
+  calibrate() {
+    const oldCallback = this.changedCallback
+
+    console.log("Starting calibration")
+    let stage = 1
+    this.changedCallback = function (buttons) {
+      
+      switch (stage) {
+        case 1:
+          console.log("Put joystick sticks in neutral positions and press L3+R3")
+          stage += 1
+          break;
+        case 2:
+          if (buttons.L3 && buttons.R3) {
+            console.log("Neutral positions captured.")
+            console.log("Release all buttons")
+            stage += 1
+          }
+          break;
+        case 3:
+          console.log("Move joystick sticks to all extrem positions. Once done press L3+R3")
+          stage += 1
+          break;
+        case 4:
+          if (buttons.L3 && buttons.R3) {
+            console.log("Extreme positions captured.")
+            console.log("Calibration complete. Release all buttons")
+            stage += 1
+
+            this.changedCallback = oldCallback
+          }
+          break;
+      }
+    }
+
   }
 }
 
