@@ -102,40 +102,27 @@ describe("WHEN buttons constructed with ones", () => {
   });
 });
 
-describe("WHEN buttons constructed with zeros", () => {
-  describe("AND sticks are set to 0 value", () => {
-    const sut = new joystick.Buttons(0, 0);
-    sut.leftX = 0
-    sut.leftY = 0
-    sut.rightX = 0
-    sut.rightY = 0
+describe("WHEN Stick is constructed", () => {
+  describe("AND set to 0 value", () => {
+    const sut = new joystick.Stick();
+    sut.value = 0
 
-    it('SHOULD have all sticks set value close to -1', () => {
+    it('SHOULD have stickValue close to -1', () => {
       const minimumValue = -1;
-      expect(sut.leftX).toBeCloseTo(minimumValue)
-      expect(sut.leftY).toBeCloseTo(minimumValue)
-
-      expect(sut.rightX).toBeCloseTo(minimumValue)
-      expect(sut.rightY).toBeCloseTo(minimumValue)
+      expect(sut.stickValue).toBeCloseTo(minimumValue)
     });
   });
 });
 
 
-describe("WHEN buttons constructed with zeros", () => {
-  describe("AND sticks are set to 255 value", () => {
-    const sut = new joystick.Buttons(0, 0);
-    sut.leftX = 255
-    sut.leftY = 255
-    sut.rightX = 255
-    sut.rightY = 255
+describe("WHEN Stick is constructed", () => {
+  describe("AND set to 255 value", () => {
+    const sut = new joystick.Stick();
+    sut.value = 255
 
-    it('SHOULD have all sticks set value close to +1', () => {
-      expect(sut.leftX).toBeCloseTo(1)
-      expect(sut.leftY).toBeCloseTo(1)
-
-      expect(sut.rightX).toBeCloseTo(1)
-      expect(sut.rightY).toBeCloseTo(1)
+    it('SHOULD have stickValue close to 1', () => {
+      const maximumValue = 1;
+      expect(sut.stickValue).toBeCloseTo(maximumValue)
     });
   });
 });

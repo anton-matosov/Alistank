@@ -37,7 +37,6 @@ class Buttons {
     this.Bluetooth = this.isBitSet(buttons1, 5)
     this.Power = this.isBitSet(buttons1, 6)
 
-
     // Buttons 2:
     // bit 0 - L1
     // bit 1 - L2
@@ -46,58 +45,28 @@ class Buttons {
     this.L1 = this.isBitSet(buttons2, 0)
     this.L2 = this.isBitSet(buttons2, 1)
     this.L3 = this.isBitSet(buttons2, 2)
-    
 
-    this._leftX = new Stick()
-    this._leftY = new Stick()
+    this.leftX = 0
+    this.leftY = 0
 
-    this._rightX = new Stick()
-    this._rightY = new Stick()
-  }
-
-  set leftX(value) {
-    this._leftX.value = value
-  }
-
-  get leftX() {
-    return this._leftX.stickValue
-  }
-
-  set leftY(value) {
-    this._leftY.value = value
-  }
-
-  get leftY() {
-    return this._leftY.stickValue
-  }
-
-  set rightX(value) {
-    this._rightX.value = value
-  }
-
-  get rightX() {
-    return this._rightX.stickValue
-  }
-
-  set rightY(value) {
-    this._rightY.value = value
-  }
-
-  get rightY() {
-    return this._rightY.stickValue
+    this.rightX = 0
+    this.rightY = 0
   }
 
   isBitSet(value, bitNumber) {
     return (value & (1 << bitNumber)) != 0
   }
-
 }
 
 class Joystick {
   constructor(device = uart.gpio) {
     this.device = device
 
-    // '/dev/cu.wchusbserial1440'
+    this.leftX = new Stick()
+    this.leftY = new Stick()
+
+    this.rightX = new Stick()
+    this.rightY = new Stick()
   }
 
   start() {
@@ -133,10 +102,11 @@ class Joystick {
   parsePacket(data) {
     // console.log('Data:', data);
     const header = data.readUInt8(0)
-    const leftX = data.readUInt8(1)
-    const leftY = data.readUInt8(2)
-    const rightX = data.readUInt8(3)
-    const rightY = data.readUInt8(4)
+    this.leftX.value = data.readUInt8(1)
+    this.leftY.value = data.readUInt8(2)
+    this.rightX.value = data.readUInt8(3)
+    this.rightY.value = data.readUInt8(4)
+
     const buttons1 = data.readUInt8(5)
     const buttons2andTick = data.readUInt8(6)
 
@@ -146,10 +116,10 @@ class Joystick {
     // console.log('header: 0x' + header.toString(16), 'tick:', tick);
     
     let buttons = new Buttons(buttons1, buttons2)
-    buttons.leftX = leftX
-    buttons.leftY = leftY
-    buttons.rightX = rightX
-    buttons.rightY = rightY
+    buttons.leftX = this.leftX.stickValue
+    buttons.leftY = this.leftY.stickValue
+    buttons.rightX = this.rightX.stickValue
+    buttons.rightY = this.rightY.stickValue
 
     return {
       header,
@@ -176,6 +146,8 @@ class Joystick {
           break;
         case 2:
           if (buttons.L3 && buttons.R3) {
+            
+
             console.log("Neutral positions captured.")
             console.log("Release all buttons")
             stage += 1
@@ -202,5 +174,6 @@ class Joystick {
 
 module.exports = {
   Joystick,
-  Buttons
+  Buttons,
+  Stick
 }
