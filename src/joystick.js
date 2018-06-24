@@ -182,32 +182,25 @@ class Joystick {
     const oldCallback = this.changedCallback
 
     console.log("Starting calibration. Turn on joystick and press any button...")
-    let stage = 1
+    let stage = 3
     this.changedCallback = function (buttons) {
       
       switch (stage) {
         case 1:
-          console.log("Put joystick sticks in neutral positions and press L3+R3")
           stage += 1
           break;
         case 2:
           if (buttons.L3 && buttons.R3) {
-            this.leftX.captureNeutral()
-            this.leftY.captureNeutral()
-            this.rightX.captureNeutral()
-            this.rightY.captureNeutral()
 
             console.log("Neutral positions captured.")
-            console.log("this.leftX.neutral", this.leftX.neutral)
-            console.log("this.leftY.neutral", this.leftY.neutral)
-            console.log("this.rightX.neutral", this.rightX.neutral)
-            console.log("this.rightY.neutral", this.rightY.neutral)
             console.log("Release all buttons")
             stage += 1
           }
           break;
         case 3:
-          console.log("Move joystick sticks to all extrem positions. Once done press L3+R3")
+          console.log("Move joystick all sticks to extrem positions.")
+          console.log("Once done release sticks to neutral position and press L3+R3")
+
           this.leftX.prepareToCaptureMinMax()
           this.leftY.prepareToCaptureMinMax()
           this.rightX.prepareToCaptureMinMax()
@@ -216,6 +209,11 @@ class Joystick {
           stage += 1
           break;
         case 4:
+          this.leftX.captureNeutral()
+          this.leftY.captureNeutral()
+          this.rightX.captureNeutral()
+          this.rightY.captureNeutral()
+          
           this.leftX.captureMinMax()
           this.leftY.captureMinMax()
           this.rightX.captureMinMax()
@@ -223,6 +221,11 @@ class Joystick {
           
           if (buttons.L3 && buttons.R3) {
             console.log("Extreme positions captured.")
+            console.log("this.leftX.neutral", this.leftX.neutral)
+            console.log("this.leftY.neutral", this.leftY.neutral)
+            console.log("this.rightX.neutral", this.rightX.neutral)
+            console.log("this.rightY.neutral", this.rightY.neutral)
+
             console.log("this.leftX.min/max", this.leftX.min, "/", this.leftX.max)
             console.log("this.leftY.min/max", this.leftY.min, "/", this.leftY.max)
             console.log("this.rightX.min/max", this.rightX.min, "/", this.rightX.max)
