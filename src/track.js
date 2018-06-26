@@ -23,9 +23,9 @@ class Track {
   }
 
   setup() {
+    rpio.open(this.pin, rpio.PWM);
     rpio.pwmSetClockDivider(this.clockdiv);
 
-    rpio.open(this.pin, rpio.PWM);
     rpio.pwmSetRange(this.pin, this.pwmRange);
 
     this.outputValue = 0
