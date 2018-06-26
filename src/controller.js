@@ -6,8 +6,8 @@ const pins = require('./pi-pins')
 
 class Controller {
   constructor(uart = null) {
-    this.leftTrack = new track.Track(pins.pwm.pin12);
-    this.rightTrack = new track.Track(pins.pwm.pin32);
+    this.leftTrack = new track.Track(pins.pwm.pin32);
+    this.rightTrack = new track.Track(pins.pwm.pin12);
 
     this.joystick = new joystick.Joystick(uart || pins.uart.gpio);
 
