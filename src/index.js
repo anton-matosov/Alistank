@@ -2,7 +2,12 @@
 
 const Controller = require('./controller')
 
-const rpio = require('./rpio-mock');
+const rpio = require('rpio');
+
+rpio.init({
+  // mock: 'raspi-3',
+  gpiomem: false
+});
 
 const controller = new Controller() // RPi
 // const controller = new Controller("/dev/cu.wchusbserial1460") // Mac
