@@ -8,10 +8,12 @@
   "private": false,
   "scripts": {
     "start": "node src/index.js",
+    "ble": "node src/index-ble.js",
     "build": "node-gyp configure && node-gyp build",
     "test": "jest"
   },
   "dependencies": {
+    "bleno": "^0.5.0",
     "commander": "^2.15.1",
     "hoek": "~> 4.2.1",
     "request": "^2.34",
