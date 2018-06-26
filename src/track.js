@@ -27,7 +27,7 @@ class Track {
     rpio.open(this.pin, rpio.PWM);
 
     rpio.pwmSetClockDivider(this.clockdiv);
-    rpio.pwmSetMode(rpio.PWM_MODE_MS)
+    // rpio.pwmSetMode(rpio.PWM_MODE_MS)
     rpio.pwmSetRange(this.pin, this.maxPWM);
 
     this.outputValue = 0
