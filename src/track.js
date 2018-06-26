@@ -15,7 +15,8 @@ class Track {
     this.maxPWM = this.minPWM + this.pwmRange;
     this._outputValue = 0;
     
-    this.clockdiv = 8;       /* This is a power-of-two divisor of the base 19.2MHz rate, with a maximum value of 4096 (4.6875kHz) (PWM refresh rate), 8 == 2.4MHz */
+    this.clockdiv = 192;  //If pwmClock is 192 and pwmRange is 2000 we'll get the PWM frequency = 50 Hz
+         /* This is a power-of-two divisor of the base 19.2MHz rate, with a maximum value of 4096 (4.6875kHz) (PWM refresh rate), 8 == 2.4MHz */
     
     this.outputPwm = 0;
 
@@ -24,9 +25,10 @@ class Track {
 
   setup() {
     rpio.open(this.pin, rpio.PWM);
-    rpio.pwmSetClockDivider(this.clockdiv);
 
-    rpio.pwmSetRange(this.pin, this.pwmRange);
+    rpio.pwmSetClockDivider(this.clockdiv);
+    rpio.pwmSetMode(rpio.PWM_MODE_MS)
+    rpio.pwmSetRange(this.pin, this.maxPWM);
 
     this.outputValue = 0
   }

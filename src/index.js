@@ -6,6 +6,7 @@ const rpio = require('rpio');
 
 rpio.init({
   // mock: 'raspi-3',
+  mapping: 'physical',    /* Use the P1-P40 numbering scheme */
   gpiomem: false
 });
 
