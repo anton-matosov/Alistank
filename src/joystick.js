@@ -130,7 +130,7 @@ class Joystick {
 
     const zeroBuffer = Buffer.from("\0");
     parser.on('data', (data) => {
-      const fullPacket = Buffer.concat(zeroBuffer, data)
+      const fullPacket = Buffer.concat([zeroBuffer, data])
       const {header, buttons, tick} = this.parsePacket(fullPacket)
 
       const validHeader = 0

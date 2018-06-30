@@ -15,8 +15,8 @@ class Controller {
       this.leftTrack.outputValue = buttons.leftY
       this.rightTrack.outputValue = -buttons.rightY
 
-      console.clear()
-      // console.log(JSON.stringify(buttons, null, 2))
+      // console.clear()
+      console.log(JSON.stringify(buttons, null, 2))
     })
   }
 
