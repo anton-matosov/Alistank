@@ -2,6 +2,8 @@
 
 const uart = require('./pi-pins').uart;
 const SerialPort = require('serialport');
+const Readline = require('parser-readline')
+const Delimiter = require('parser-delimiter')
 const fs = require('fs');
 
 class Stick {
@@ -125,9 +127,12 @@ class Joystick {
       console.log('Error: ', err.message);
     })
   
+    // const parser = port.pipe(new Readline({ delimiter: '\0' }))
+    const parser = port.pipe(new Delimiter({ delimiter: '\n' }))
     // Read data that is available but keep the stream from entering "flowing mode"
-    port.on('readable', () => {
-      const data = port.read()
+    // port.on('readable', () => {
+    //   const data = port.read()
+    parser.on('data', (data) => {
       const {header, buttons, tick} = this.parsePacket(data)
 
       const validHeader = 0
