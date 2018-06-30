@@ -12,6 +12,8 @@ sudo apt-get install -y nodejs
 # Deps for bleno/noble
 sudo apt-get -y install bluetooth bluez libbluetooth-dev libudev-dev
 
-# Install JS dependencies and build binary deps. NOTE: yarn doesn't work here
+# Install JS dependencies and build binary deps. NOTE: yarn doesn't work here because of limited integration with gyp
 npm install  
 
+# Run 
+sudo npm start
