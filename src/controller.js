@@ -18,6 +18,17 @@ class Controller {
       // console.clear()
       // console.log(JSON.stringify(buttons, null, 2))
     })
+
+    process.on('SIGINT', () => {
+      console.log("\nStopping the tank...");
+  
+      this.joystick.onChanged(undefined)
+
+      this.leftTrack.outputValue = 0
+      this.rightTrack.outputValue = 0
+
+      process.exit();
+  });
   }
 
   start() {
