@@ -10,7 +10,7 @@ describe("WHEN constructed", () => {
   it('SHOULD set 0 value for outputValue', () => {
     expect(sut.outputValue).toEqual(0);
   })
-  it('SHOULD set median PWM (1500) value for outputPwm', () => {
-    expect(sut.outputPwm).toEqual(1000 + 500);
+  it('SHOULD set median PWM (midPWM) value for outputPwm', () => {
+    expect(sut.outputPwm).toEqual(sut.midPWM);
   })
 })

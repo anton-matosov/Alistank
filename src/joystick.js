@@ -146,7 +146,12 @@ class Joystick {
   }
 
   parsePacket(data) {
-    // console.log('Data:', data);
+    console.log('Joystick Data:', data);
+    if (data.length < 7) {
+      return {
+        header: -1
+      }
+    }
     const header = data.readUInt8(0)
     this.leftX.value = data.readUInt8(1)
     this.leftY.value = data.readUInt8(2)
