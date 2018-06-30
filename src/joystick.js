@@ -149,7 +149,7 @@ class Joystick {
   }
 
   parsePacket(data) {
-    console.log('Joystick Data:', data);
+    // console.log('Joystick Data:', data);
     if (data.length < 7) {
       return {
         header: -1

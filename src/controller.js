@@ -12,11 +12,11 @@ class Controller {
     this.joystick = new joystick.Joystick(uart || pins.uart.gpio);
 
     this.joystick.onChanged(buttons => {
-      this.leftTrack.outputValue = buttons.leftY
-      this.rightTrack.outputValue = -buttons.rightY
+      this.leftTrack.outputValue = -buttons.leftY
+      this.rightTrack.outputValue = buttons.rightY
 
       // console.clear()
-      console.log(JSON.stringify(buttons, null, 2))
+      // console.log(JSON.stringify(buttons, null, 2))
     })
   }
 
