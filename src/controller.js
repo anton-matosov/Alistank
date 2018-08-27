@@ -20,12 +20,8 @@ class Controller {
     })
 
     process.on('SIGINT', () => {
-      console.log("\nStopping the tank...");
-  
-      this.joystick.onChanged(undefined)
-
-      this.leftTrack.outputValue = 0
-      this.rightTrack.outputValue = 0
+      
+      this.stop()
 
       process.exit();
   });
@@ -33,6 +29,16 @@ class Controller {
 
   start() {
     this.joystick.start()
+  }
+
+  stop() {
+    console.log("\nStopping the tank...");
+    this.joystick.onChanged(null)
+    this.joystick.stop()
+
+    this.leftTrack.outputValue = 0
+    this.rightTrack.outputValue = 0
+    console.log("Done!");
   }
 
   calibrate() {

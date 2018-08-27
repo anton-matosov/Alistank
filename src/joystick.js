@@ -114,22 +114,32 @@ class Joystick {
     this.leftY.load(`${this.calibrationDataPath}/leftY.json`)
     this.rightX.load(`${this.calibrationDataPath}/rightX.json`)
     this.rightY.load(`${this.calibrationDataPath}/rightY.json`)
+
+    this.port = null
+    this.parser = null
+  }
+
+  stop() {
+    this.port.close()
+
+    this.port = null
+    this.parser = null
   }
 
   start() {
-    var port = new SerialPort(this.device, {
+    this.port = new SerialPort(this.device, {
       baudRate: 9600
     });
     
     // Open errors will be emitted as an error event
-    port.on('error', (err) => {
+    this.port.on('error', (err) => {
       console.log('Error: ', err.message);
     })
   
-    const parser = port.pipe(new Delimiter({ delimiter: '\0' }))
+    this.parser = this.port.pipe(new Delimiter({ delimiter: '\0' }))
 
     const zeroBuffer = Buffer.from("\0");
-    parser.on('data', (data) => {
+    this.parser.on('data', (data) => {
       const fullPacket = Buffer.concat([zeroBuffer, data])
       const {header, buttons, tick} = this.parsePacket(fullPacket)
 
@@ -140,7 +150,7 @@ class Joystick {
 
       let ack = new Buffer.alloc(1)
       ack.writeInt8(tick)
-      port.write(ack)
+      this.port.write(ack)
 
       if (this.changedCallback) {
         this.changedCallback(buttons)
